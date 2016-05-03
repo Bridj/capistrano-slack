@@ -56,7 +56,8 @@ module Capistrano
 
           set :commitmsg do
             if branch = fetch(:branch, nil)
-              `git ls-remote --heads 2>/dev/null | grep #{branch}`.split.first
+              sha = `git ls-remote --heads 2>/dev/null | grep #{branch}`.split.first
+              sha + "\n" + `git log --pretty=oneline -n 1 #{sha} 2>/dev/null`
             end
           end
 
@@ -86,7 +87,7 @@ module Capistrano
                 slack_connect(msg)
 
                 commitmsg = ActiveSupport::Multibyte::Chars.new(fetch(:commitmsg)).mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/,'').to_s
-                slack_connect("#{fetch(:application)} #{fetch(:stage, 'production')} is NOW at #{commitmsg}")
+                slack_connect("#{fetch(:application)} #{fetch(:stage, 'production')} is now at #{commitmsg}")
               end
             end
           end
