@@ -56,7 +56,7 @@ module Capistrano
 
           set :commitmsg do
             if branch = fetch(:branch, nil)
-              `git ls-remote --heads ./. #{branch}`.split.first
+              `git ls-remote --heads 2>/dev/null | grep #{branch}`.split.first
             end
           end
 
