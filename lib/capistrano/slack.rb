@@ -56,7 +56,8 @@ module Capistrano
 
           set :commitmsg do
             if branch = fetch(:branch, nil)
-              `git log --pretty=oneline -n 1 #{branch}`.chomp
+              sha = `git ls-remote --heads 2>/dev/null | grep #{branch}`.split.first
+              sha + "\n" + `git log --pretty=oneline -n 1 #{sha} 2>/dev/null`
             end
           end
 
